@@ -372,19 +372,70 @@
         body.dark-mode .filter-btn {
             color: #e0e0e0;
         }
+        
+        /* Styles pour les blagues cachées */
+        .easter-egg-tooltip {
+            display: none;
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            z-index: 100;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        
+        #logo-easter-egg:hover .easter-egg-tooltip,
+        #refresh-joke:hover .easter-egg-tooltip,
+        #sensations-header:hover .easter-egg-tooltip,
+        #familles-header:hover .easter-egg-tooltip,
+        #enfants-header:hover .easter-egg-tooltip,
+        #autres-header:hover .easter-egg-tooltip {
+            display: block;
+        }
+        
+        .hidden-joke {
+            font-size: 0.7rem;
+            color: var(--ig-secondary);
+            cursor: pointer;
+            margin-top: 5px;
+            transition: color 0.3s;
+        }
+        
+        .hidden-joke:hover {
+            color: var(--ig-blue);
+        }
+        
+        /* Animation pour la potion magique */
+        @keyframes potionEffect {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .potion-active {
+            animation: potionEffect 0.5s ease;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">
+        <div class="logo" id="logo-easter-egg">
             <i class="fas fa-hat-wizard"></i> Parc Astérix
+            <span class="easter-egg-tooltip">Par Toutatis !</span>
         </div>
         <div class="header-actions">
             <button id="dark-mode-toggle" class="icon-btn">
                 <i class="fas fa-moon"></i>
             </button>
-            <button class="refresh-btn" onclick="window.location.reload();">
+            <button class="refresh-btn" onclick="window.location.reload();" id="refresh-joke">
                 <i class="fas fa-sync-alt"></i> Actualiser
+                <span class="easter-egg-tooltip">Attention aux Romains qui rechargent la page !</span>
             </button>
             <button id="auto-refresh-toggle" class="icon-btn" title="Activer/désactiver le rafraîchissement automatique">
                 <i class="fas fa-clock"></i>
@@ -395,7 +446,7 @@
     <div class="search-container">
         <div class="search-box">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" id="search-input" placeholder="Rechercher une attraction...">
+            <input type="text" id="search-input" placeholder="Chercher un Romain... euh, une attraction...">
         </div>
         <div class="filter-options">
             <button class="filter-btn active" data-sort="default">Par défaut</button>
@@ -415,20 +466,22 @@
         Dernière mise à jour : {{ last_updated }}
         <span class="freshness-indicator freshness-{{ data_freshness }}">
             {% if data_freshness == 'recent' %}
-                <i class="fas fa-check-circle"></i> Données récentes
+                <i class="fas fa-check-circle"></i> Données récentes (fraîches comme le poisson d'Ordralfabétix !)
             {% elif data_freshness == 'medium' %}
-                <i class="fas fa-exclamation-circle"></i> Données de moins d'une heure
+                <i class="fas fa-exclamation-circle"></i> Données de moins d'une heure (comme la sieste d'Obélix)
             {% elif data_freshness == 'old' %}
-                <i class="fas fa-exclamation-triangle"></i> Données anciennes
+                <i class="fas fa-exclamation-triangle"></i> Données anciennes (plus vieilles que Panoramix)
             {% else %}
-                <i class="fas fa-question-circle"></i> Fraîcheur inconnue
+                <i class="fas fa-question-circle"></i> Fraîcheur inconnue (comme la recette de la potion magique)
             {% endif %}
         </span>
+        <span class="hidden-joke" id="potion-joke">Cliquez ici pour une dose de potion magique !</span>
     </div>
 
     <div class="category" data-category="sensations">
-        <div class="category-header">
+        <div class="category-header" id="sensations-header">
             <span class="emoji">🎢</span> Sensations fortes
+            <span class="easter-egg-tooltip">Comme quand Obélix tombe dans la marmite !</span>
         </div>
         {% if sensations %}
             {% for ride in sensations %}
@@ -464,8 +517,9 @@
     </div>
 
     <div class="category" data-category="familles">
-        <div class="category-header">
+        <div class="category-header" id="familles-header">
             <span class="emoji">👨‍👩‍👧‍👦</span> Attractions familiales
+            <span class="easter-egg-tooltip">Idéal pour Astérix et ses amis (sauf Assurancetourix, on l'a laissé attaché à un arbre)</span>
         </div>
         {% if familles %}
             {% for ride in familles %}
@@ -497,8 +551,9 @@
     </div>
 
     <div class="category" data-category="enfants">
-        <div class="category-header">
+        <div class="category-header" id="enfants-header">
             <span class="emoji">🧒</span> Petits Gaulois
+            <span class="easter-egg-tooltip">Pour les petits qui n'ont pas encore bu de potion magique</span>
         </div>
         {% if enfants %}
             {% for ride in enfants %}
@@ -524,8 +579,9 @@
     </div>
 
     <div class="category" data-category="autres">
-        <div class="category-header">
+        <div class="category-header" id="autres-header">
             <span class="emoji">🏛️</span> Autres attractions
+            <span class="easter-egg-tooltip">Même les Romains peuvent y aller (mais ils risquent de prendre une baffe d'Obélix)</span>
         </div>
         {% if autres %}
             {% for ride in autres %}
@@ -752,6 +808,74 @@
                 }
             }, 1000);
         }
+        
+        // Blagues cachées et easter eggs
+        document.addEventListener('DOMContentLoaded', () => {
+            // Effet de potion magique
+            const potionJoke = document.getElementById('potion-joke');
+            if (potionJoke) {
+                potionJoke.addEventListener('click', () => {
+                    // Ajouter l'effet de potion magique à toute la page
+                    document.body.classList.add('potion-active');
+                    
+                    // Message aléatoire après avoir bu la potion
+                    const messages = [
+                        "Mmmm, délicieux ! Vous vous sentez plus fort !",
+                        "Par Toutatis ! Quelle force !",
+                        "Attention aux Romains !",
+                        "Astérix serait fier de vous !",
+                        "Obélix est jaloux, il n'a pas le droit d'en boire !"
+                    ];
+                    
+                    alert(messages[Math.floor(Math.random() * messages.length)]);
+                    
+                    // Retirer l'effet après l'animation
+                    setTimeout(() => {
+                        document.body.classList.remove('potion-active');
+                    }, 500);
+                });
+            }
+            
+            // Easter egg dans la barre de recherche
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                const easterEggWords = ['panoramix', 'obelix', 'asterix', 'idefix', 'potion'];
+                
+                searchInput.addEventListener('input', () => {
+                    const value = searchInput.value.toLowerCase();
+                    
+                    for (const word of easterEggWords) {
+                        if (value.includes(word)) {
+                            // Déclencher un easter egg spécifique au mot
+                            switch(word) {
+                                case 'panoramix':
+                                    searchInput.placeholder = "Le druide est occupé à préparer la potion...";
+                                    break;
+                                case 'obelix':
+                                    searchInput.placeholder = "Il est tombé dans la marmite quand il était petit !";
+                                    break;
+                                case 'asterix':
+                                    searchInput.placeholder = "Le plus rusé des Gaulois !";
+                                    break;
+                                case 'idefix':
+                                    searchInput.placeholder = "Wouaf ! Wouaf !";
+                                    break;
+                                case 'potion':
+                                    searchInput.placeholder = "Recette secrète, ne pas divulguer aux Romains !";
+                                    break;
+                            }
+                            
+                            // Réinitialiser le placeholder après 3 secondes
+                            setTimeout(() => {
+                                searchInput.placeholder = "Chercher un Romain... euh, une attraction...";
+                            }, 3000);
+                            
+                            break; // Sortir de la boucle après avoir trouvé un mot
+                        }
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>
