@@ -208,16 +208,30 @@
         }
         
         .icon-btn {
-            background: transparent;
+            background: none;
             border: none;
-            color: var(--ig-primary);
             font-size: 1.2rem;
+            color: var(--ig-primary);
             cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 8px;
+            margin-left: 8px;
+        }
+        
+        .icon-btn.active {
+            color: var(--ig-blue);
+            position: relative;
+        }
+        
+        .auto-refresh-indicator {
+            font-size: 0.6rem;
+            font-weight: bold;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: var(--ig-blue);
+            color: white;
+            border-radius: 8px;
+            padding: 1px 4px;
         }
         
         .search-container {
@@ -319,6 +333,9 @@
             </button>
             <button class="refresh-btn" onclick="window.location.reload();">
                 <i class="fas fa-sync-alt"></i> Actualiser
+            </button>
+            <button id="auto-refresh-toggle" class="icon-btn" title="Activer/désactiver le rafraîchissement automatique">
+                <i class="fas fa-clock"></i>
             </button>
         </div>
     </div>
@@ -578,6 +595,69 @@
                 });
             });
         });
+        
+        // Rafraîchissement automatique
+        const autoRefreshToggle = document.getElementById('auto-refresh-toggle');
+        let refreshInterval;
+        let countdownInterval;
+        
+        // Vérifier si le rafraîchissement automatique était activé précédemment
+        if (localStorage.getItem('autoRefresh') === 'true') {
+            startAutoRefresh();
+            autoRefreshToggle.classList.add('active');
+            autoRefreshToggle.innerHTML = '<i class="fas fa-clock"></i> <span class="auto-refresh-indicator">120s</span>';
+        }
+        
+        autoRefreshToggle.addEventListener('click', () => {
+            const isActive = autoRefreshToggle.classList.contains('active');
+            
+            if (isActive) {
+                // Désactiver le rafraîchissement automatique
+                stopAutoRefresh();
+                autoRefreshToggle.classList.remove('active');
+                autoRefreshToggle.innerHTML = '<i class="fas fa-clock"></i>';
+                localStorage.setItem('autoRefresh', 'false');
+            } else {
+                // Activer le rafraîchissement automatique
+                startAutoRefresh();
+                autoRefreshToggle.classList.add('active');
+                autoRefreshToggle.innerHTML = '<i class="fas fa-clock"></i> <span class="auto-refresh-indicator">120s</span>';
+                localStorage.setItem('autoRefresh', 'true');
+            }
+        });
+        
+        function startAutoRefresh() {
+            // Rafraîchir toutes les 2 minutes (120000 ms)
+            refreshInterval = setInterval(() => {
+                window.location.reload();
+            }, 120000);
+            
+            // Ajouter un compte à rebours visuel
+            updateRefreshCountdown(120);
+        }
+        
+        function stopAutoRefresh() {
+            clearInterval(refreshInterval);
+            clearInterval(countdownInterval);
+        }
+        
+        function updateRefreshCountdown(seconds) {
+            const indicator = document.querySelector('.auto-refresh-indicator');
+            if (!indicator) return;
+            
+            let remaining = seconds;
+            
+            indicator.textContent = `${remaining}s`;
+            
+            countdownInterval = setInterval(() => {
+                remaining--;
+                indicator.textContent = `${remaining}s`;
+                
+                if (remaining <= 0) {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+        }
     </script>
 </body>
 </html>
