@@ -261,28 +261,62 @@
             font-size: 0.9rem;
         }
         
-        .filter-options {
+        .filter-options, .category-filters {
             display: flex;
             gap: 8px;
+            margin-top: 10px;
             overflow-x: auto;
             padding-bottom: 5px;
         }
         
-        .filter-btn {
-            border: 1px solid var(--ig-border);
+        .filter-btn, .category-btn {
             background: white;
-            color: var(--ig-primary);
-            border-radius: 15px;
-            padding: 5px 12px;
-            font-size: 0.8rem;
-            white-space: nowrap;
+            border: 1px solid var(--ig-border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
             cursor: pointer;
+            white-space: nowrap;
         }
         
-        .filter-btn.active {
+        .filter-btn.active, .category-btn.active {
             background: var(--ig-blue);
             color: white;
             border-color: var(--ig-blue);
+        }
+        
+        .category-filters {
+            margin-top: 8px;
+        }
+        
+        .category-btn[data-category="sensations"] {
+            border-color: var(--ig-red);
+            color: var(--ig-red);
+        }
+        
+        .category-btn[data-category="sensations"].active {
+            background: var(--ig-red);
+            color: white;
+        }
+        
+        .category-btn[data-category="familles"] {
+            border-color: var(--ig-blue);
+            color: var(--ig-blue);
+        }
+        
+        .category-btn[data-category="familles"].active {
+            background: var(--ig-blue);
+            color: white;
+        }
+        
+        .category-btn[data-category="enfants"] {
+            border-color: var(--ig-green);
+            color: var(--ig-green);
+        }
+        
+        .category-btn[data-category="enfants"].active {
+            background: var(--ig-green);
+            color: white;
         }
         
         .hidden {
@@ -350,6 +384,13 @@
             <button class="filter-btn" data-sort="wait">Temps d'attente</button>
             <button class="filter-btn" data-sort="difficulty">Difficulté</button>
         </div>
+        <div class="category-filters">
+            <button class="category-btn active" data-category="all">Toutes</button>
+            <button class="category-btn" data-category="sensations">Sensations fortes</button>
+            <button class="category-btn" data-category="familles">Familiales</button>
+            <button class="category-btn" data-category="enfants">Petits Gaulois</button>
+            <button class="category-btn" data-category="autres">Autres</button>
+        </div>
     </div>
     
     <div class="update-info">
@@ -367,7 +408,7 @@
         </span>
     </div>
 
-    <div class="category">
+    <div class="category" data-category="sensations">
         <div class="category-header">
             <span class="emoji">🎢</span> Sensations fortes
         </div>
@@ -404,7 +445,7 @@
         {% endif %}
     </div>
 
-    <div class="category">
+    <div class="category" data-category="familles">
         <div class="category-header">
             <span class="emoji">👨‍👩‍👧‍👦</span> Attractions familiales
         </div>
@@ -437,7 +478,7 @@
         {% endif %}
     </div>
 
-    <div class="category">
+    <div class="category" data-category="enfants">
         <div class="category-header">
             <span class="emoji">🧒</span> Petits Gaulois
         </div>
@@ -464,7 +505,7 @@
         {% endif %}
     </div>
 
-    <div class="category">
+    <div class="category" data-category="autres">
         <div class="category-header">
             <span class="emoji">🏛️</span> Autres attractions
         </div>
@@ -593,6 +634,41 @@
                         category.appendChild(ride);
                     });
                 });
+            });
+        });
+        
+        // Filtrage par catégorie
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const categories = document.querySelectorAll('.category');
+        
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Retirer la classe active de tous les boutons
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Ajouter la classe active au bouton cliqué
+                button.classList.add('active');
+                
+                const categoryType = button.getAttribute('data-category');
+                
+                // Afficher/masquer les catégories en fonction du filtre
+                if (categoryType === 'all') {
+                    // Afficher toutes les catégories
+                    categories.forEach(category => {
+                        category.style.display = 'block';
+                    });
+                } else {
+                    // Masquer toutes les catégories d'abord
+                    categories.forEach(category => {
+                        category.style.display = 'none';
+                    });
+                    
+                    // Afficher uniquement la catégorie sélectionnée
+                    const selectedCategory = document.querySelector(`.category[data-category="${categoryType}"]`);
+                    if (selectedCategory) {
+                        selectedCategory.style.display = 'block';
+                    }
+                }
             });
         });
         
