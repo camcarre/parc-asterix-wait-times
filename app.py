@@ -47,7 +47,7 @@ def fetch_api_data():
 def index():
     # Récupérer les données de l'API avec mise en cache
     data = fetch_api_data()
-
+    
     # Définition des catégories d'attractions
     sensations_fortes = [
         "Toutatis", "OzIris", "Tonnerre 2 Zeus", "Goudurix", "La Trace du Hourra", 
@@ -68,80 +68,57 @@ def index():
         "L'Escadrille des As", "Le Petit Train", "Les Chevaux du Roy", "Sanglier d'Or playground"
     ]
 
-    # Extraire toutes les attractions directement depuis la clé 'rides'
-    rides = []
+    # Extraire et trier les attractions par catégorie
+    sensations = []
+    familles = []
+    enfants = []
+    autres = []
+    
     for ride in data.get("rides", []):
-        # Déterminer la catégorie
-        category = "Autre"
-        if ride["name"] in sensations_fortes:
-            category = "Sensations fortes"
-        elif ride["name"] in familiales:
-            category = "Familiale"
-        elif ride["name"] in petits_gaulois:
-            category = "Petits Gaulois"
-        
-        rides.append({
+        ride_info = {
             "name": ride["name"],
             "wait_time": ride["wait_time"],
-            "is_open": ride["is_open"],
-            "category": category
-        })
-
-    # Trier les attractions par catégorie et temps d'attente
-    sensations = sorted([r for r in rides if r["category"] == "Sensations fortes"], 
-                        key=lambda r: (not r["is_open"], r["wait_time"]))
+            "is_open": ride["is_open"]
+        }
+        
+        if ride["name"] in sensations_fortes:
+            sensations.append(ride_info)
+        elif ride["name"] in familiales:
+            familles.append(ride_info)
+        elif ride["name"] in petits_gaulois:
+            enfants.append(ride_info)
+        else:
+            autres.append(ride_info)
     
-    familles = sorted([r for r in rides if r["category"] == "Familiale"], 
-                      key=lambda r: (not r["is_open"], r["wait_time"]))
+    # Trier par temps d'attente (attractions fermées à la fin)
+    sensations.sort(key=lambda x: (not x["is_open"], x["wait_time"]))
+    familles.sort(key=lambda x: (not x["is_open"], x["wait_time"]))
+    enfants.sort(key=lambda x: (not x["is_open"], x["wait_time"]))
+    autres.sort(key=lambda x: (not x["is_open"], x["wait_time"]))
     
-    enfants = sorted([r for r in rides if r["category"] == "Petits Gaulois"], 
-                     key=lambda r: (not r["is_open"], r["wait_time"]))
-    
-    autres = sorted([r for r in rides if r["category"] == "Autre"], 
-                    key=lambda r: (not r["is_open"], r["wait_time"]))
-
     # Récupérer l'heure de la dernière mise à jour
     last_updated = data.get("last_updated")
     if not last_updated and data.get("rides") and len(data["rides"]) > 0:
         last_updated = data["rides"][0].get("last_updated")
-
-    # Obtenir l'heure actuelle en UTC
-    now = datetime.now(timezone.utc)
-
+    
     # Formater la date
+    formatted_date = "aujourd'hui"
+    
     if last_updated:
         try:
+            # Convertir le format ISO en objet datetime
             dt = datetime.fromisoformat(last_updated.replace('Z', '+00:00'))
-            age_delta = now - dt
-            age_minutes = int(age_delta.total_seconds() / 60)
-            
-            formatted_date = dt.astimezone(timezone(timedelta(hours=2))).strftime("%d/%m/%Y à %H:%M:%S")
-            
-            if age_minutes < 15:
-                freshness = f"Données récentes (il y a {age_minutes} minutes)"
-            elif age_minutes < 60:
-                freshness = f"Données datant d'il y a {age_minutes} minutes"
-            elif age_minutes < 24*60:
-                hours = age_minutes // 60
-                mins = age_minutes % 60
-                freshness = f"Données datant d'il y a {hours}h{mins:02d}"
-            else:
-                freshness = "Données anciennes (plus de 24h)"
+            formatted_date = dt.strftime("%d/%m/%Y à %H:%M:%S")
         except:
             formatted_date = last_updated
-            freshness = "Date de mise à jour inconnue"
-    else:
-        formatted_date = "aujourd'hui"
-        freshness = "Fraîcheur des données inconnue"
-
+    
     return render_template('index.html', 
                           sensations=sensations, 
                           familles=familles, 
                           enfants=enfants, 
                           autres=autres,
-                          last_updated=formatted_date,
-                          freshness=freshness)
+                          last_updated=formatted_date)
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 5050))  # Changé de 5000 à 5050
     app.run(host='0.0.0.0', port=port)

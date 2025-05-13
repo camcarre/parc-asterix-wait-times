@@ -3,186 +3,535 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parc Astérix - Temps d'attente</title>
-    <!-- Ajout des méta-tags pour améliorer le chargement -->
-    <meta http-equiv="Cache-Control" content="max-age=300">
-    <meta name="description" content="Temps d'attente en direct pour les attractions du Parc Astérix">
+    <title>Parc Astérix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* CSS minifié et optimisé */
-        body{font-family:system-ui,-apple-system,sans-serif;line-height:1.5;color:#333;max-width:800px;margin:0 auto;padding:15px;background-color:#f5f5f5}
-        header{text-align:center;margin-bottom:20px;border-bottom:2px solid #e74c3c;padding-bottom:10px}
-        h1{color:#e74c3c;margin-bottom:5px;font-size:1.8rem}
-        h2{margin-top:0;color:#e74c3c;border-bottom:1px solid #eee;padding-bottom:8px;font-size:1.4rem}
-        .update-info{background-color:#f8f9fa;border-left:4px solid #e74c3c;padding:10px;margin-bottom:15px;font-size:.9em}
-        .category{background-color:#fff;border-radius:8px;padding:12px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-        .description{font-style:italic;margin-bottom:12px;color:#666}
-        ul{list-style-type:none;padding:0;margin:0}
-        li{padding:6px 0;border-bottom:1px solid #eee}
-        .open{color:#27ae60;font-weight:700}
-        .closed{color:#c0392b}
-        .wait-time{font-weight:700;margin-left:8px}
-        footer{text-align:center;margin-top:25px;font-size:.8em;color:#777;border-top:1px solid #eee;padding-top:15px}
-        .warning{background-color:#fcf8e3;border-left:4px solid #f39c12;padding:10px;margin:12px 0;font-size:.9em}
-        .refresh-button{display:block;width:100%;padding:10px;background-color:#e74c3c;color:#fff;border:none;border-radius:4px;font-size:16px;cursor:pointer;margin:15px 0}
-        .refresh-button:hover{background-color:#c0392b}
-        .startup-notice{display:none;position:fixed;bottom:20px;right:20px;background:#333;color:#fff;padding:10px;border-radius:4px;font-size:.8em;max-width:250px;z-index:100}
-        @media (max-width:600px){body{padding:8px}.category{padding:8px}}
+        :root {
+            --ig-primary: #262626;
+            --ig-secondary: #fafafa;
+            --ig-border: #dbdbdb;
+            --ig-blue: #0095f6;
+            --ig-red: #ed4956;
+            --ig-green: #4cb5ab;
+            --ig-yellow: #ffc107;
+            --ig-gradient-start: #405de6;
+            --ig-gradient-mid: #5851db;
+            --ig-gradient-end: #833ab4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--ig-primary);
+            background: var(--ig-secondary);
+            padding-bottom: 80px;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--ig-border);
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(to right, var(--ig-gradient-start), var(--ig-gradient-end));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .refresh-btn {
+            background: var(--ig-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .refresh-btn i {
+            margin-right: 6px;
+        }
+        
+        .update-info {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #8e8e8e;
+            margin: 10px 0;
+            padding: 0 16px;
+        }
+        
+        .category {
+            margin: 10px 16px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .category-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--ig-border);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .category-header .emoji {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .ride {
+            display: flex;
+            flex-direction: column;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--ig-border);
+        }
+        
+        .ride:last-child {
+            border-bottom: none;
+        }
+        
+        .ride-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        
+        .ride-name {
+            font-weight: 500;
+        }
+        
+        .wait {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .wait i {
+            margin-right: 6px;
+        }
+        
+        .difficulty {
+            font-size: 0.8rem;
+            color: #8e8e8e;
+            padding-left: 2px;
+        }
+        
+        .open {
+            color: var(--ig-green);
+        }
+        
+        .closed {
+            color: var(--ig-red);
+        }
+        
+        .difficulty-extreme {
+            color: var(--ig-red);
+        }
+        
+        .difficulty-hard {
+            color: var(--ig-red);
+        }
+        
+        .difficulty-medium {
+            color: var(--ig-yellow);
+        }
+        
+        .difficulty-easy {
+            color: var(--ig-green);
+        }
+        
+        /* Nouvelles fonctionnalités */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--ig-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .search-container {
+            padding: 10px 16px;
+            background: white;
+            border-bottom: 1px solid var(--ig-border);
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 10px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8e8e8e;
+        }
+        
+        #search-input {
+            width: 100%;
+            padding: 10px 10px 10px 35px;
+            border: 1px solid var(--ig-border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .filter-options {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .filter-btn {
+            border: 1px solid var(--ig-border);
+            background: white;
+            color: var(--ig-primary);
+            border-radius: 15px;
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        
+        .filter-btn.active {
+            background: var(--ig-blue);
+            color: white;
+            border-color: var(--ig-blue);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Mode sombre */
+        body.dark-mode {
+            background: #121212;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .header,
+        body.dark-mode .search-container,
+        body.dark-mode .category,
+        body.dark-mode #search-input,
+        body.dark-mode .filter-btn {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+        
+        body.dark-mode .ride {
+            border-color: #333;
+        }
+        
+        body.dark-mode .icon-btn,
+        body.dark-mode .ride-name {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode #search-input {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .filter-btn {
+            color: #e0e0e0;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>🎢 Parc Astérix - Temps d'attente</h1>
-        <p>Consultez les temps d'attente en direct pour planifier votre visite</p>
-    </header>
-    
-    <div class="update-info">
-        <p>📌 Données mises à jour le {{ last_updated }}</p>
-        <p>⚠️ {{ freshness }} - PAS DE DONNÉES EN TEMPS RÉEL</p>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-hat-wizard"></i> Parc Astérix
+        </div>
+        <div class="header-actions">
+            <button id="dark-mode-toggle" class="icon-btn">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="refresh-btn" onclick="window.location.reload();">
+                <i class="fas fa-sync-alt"></i> Actualiser
+            </button>
+        </div>
     </div>
     
-    <button class="refresh-button" onclick="window.location.reload()">Rafraîchir les données</button>
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="search-input" placeholder="Rechercher une attraction...">
+        </div>
+        <div class="filter-options">
+            <button class="filter-btn active" data-sort="default">Par défaut</button>
+            <button class="filter-btn" data-sort="wait">Temps d'attente</button>
+            <button class="filter-btn" data-sort="difficulty">Difficulté</button>
+        </div>
+    </div>
     
-    <section class="category">
-        <h2>🎢 SENSATIONS FORTES</h2>
-        <p class="description">Ces attractions sont destinées aux amateurs de sensations intenses</p>
-        <ul>
+    <div class="update-info">Dernière mise à jour : {{ last_updated }}</div>
+
+    <div class="category">
+        <div class="category-header">
+            <span class="emoji">🎢</span> Sensations fortes
+        </div>
+        {% if sensations %}
             {% for ride in sensations %}
-                <li>
-                    {% if ride.is_open %}
-                        <span class="open">✅ OUVERT</span>
-                        <span class="wait-time">{{ ride.wait_time }} min</span>
-                    {% else %}
-                        <span class="closed">❌ FERMÉ</span>
-                    {% endif %}
-                    - {{ ride.name }}
-                </li>
+                <div class="ride">
+                    <div class="ride-top">
+                        <span class="ride-name">{{ ride.name }}</span>
+                        <span class="wait {% if ride.is_open %}open{% else %}closed{% endif %}">
+                            {% if ride.is_open %}
+                                <i class="fas fa-clock"></i> {{ ride.wait_time }} min
+                            {% else %}
+                                <i class="fas fa-times-circle"></i> Fermé
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="difficulty">
+                        {% if ride.name == "Toutatis" %}
+                            <span class="difficulty-extreme">🔴 Extrême (lancement, 107 km/h)</span>
+                        {% elif ride.name == "OzIris" or ride.name == "Tonnerre 2 Zeus" %}
+                            <span class="difficulty-hard">🔴 Très fort</span>
+                        {% elif ride.name == "Goudurix" or ride.name == "Discobélix" or ride.name == "La Trace du Hourra" %}
+                            <span class="difficulty-hard">🔴 Fort</span>
+                        {% elif ride.name == "La Galère" or ride.name == "Le Cheval de Troie" or ride.name == "Les Chaises Volantes" %}
+                            <span class="difficulty-medium">🟡 Moyen</span>
+                        {% else %}
+                            <span class="difficulty-easy">🟢 Facile</span>
+                        {% endif %}
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
-    </section>
-    
-    <section class="category">
-        <h2>👨‍👩‍👧‍👦 ATTRACTIONS FAMILIALES</h2>
-        <p class="description">Ces attractions conviennent à tous les âges</p>
-        <ul>
+        {% else %}
+            <div class="ride">Aucune donnée disponible</div>
+        {% endif %}
+    </div>
+
+    <div class="category">
+        <div class="category-header">
+            <span class="emoji">👨‍👩‍👧‍👦</span> Attractions familiales
+        </div>
+        {% if familles %}
             {% for ride in familles %}
-                <li>
-                    {% if ride.is_open %}
-                        <span class="open">✅ OUVERT</span>
-                        <span class="wait-time">{{ ride.wait_time }} min</span>
-                    {% else %}
-                        <span class="closed">❌ FERMÉ</span>
-                    {% endif %}
-                    - {{ ride.name }}
-                </li>
+                <div class="ride">
+                    <div class="ride-top">
+                        <span class="ride-name">{{ ride.name }}</span>
+                        <span class="wait {% if ride.is_open %}open{% else %}closed{% endif %}">
+                            {% if ride.is_open %}
+                                <i class="fas fa-clock"></i> {{ ride.wait_time }} min
+                            {% else %}
+                                <i class="fas fa-times-circle"></i> Fermé
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="difficulty">
+                        {% if ride.name == "Pégase Express" or ride.name == "Le Vol d'Icare" or ride.name == "L'Oxygénarium" or ride.name == "Menhir Express" or ride.name == "Romus et Rapidus" or ride.name == "La revanche des pirates - Le Grand Splatch" %}
+                            <span class="difficulty-medium">🟡 Moyen</span>
+                        {% elif ride.name == "L'Hydre de Lerne" or ride.name == "La Petite Tempête" %}
+                            <span class="difficulty-medium">🟡 Moyen (manège tournant)</span>
+                        {% else %}
+                            <span class="difficulty-easy">🟢 Facile</span>
+                        {% endif %}
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
-    </section>
-    
-    <section class="category">
-        <h2>🧒 PETITS GAULOIS</h2>
-        <p class="description">Ces attractions sont spécialement conçues pour les plus jeunes visiteurs</p>
-        <ul>
+        {% else %}
+            <div class="ride">Aucune donnée disponible</div>
+        {% endif %}
+    </div>
+
+    <div class="category">
+        <div class="category-header">
+            <span class="emoji">🧒</span> Petits Gaulois
+        </div>
+        {% if enfants %}
             {% for ride in enfants %}
-                <li>
-                    {% if ride.is_open %}
-                        <span class="open">✅ OUVERT</span>
-                        <span class="wait-time">{{ ride.wait_time }} min</span>
-                    {% else %}
-                        <span class="closed">❌ FERMÉ</span>
-                    {% endif %}
-                    - {{ ride.name }}
-                </li>
+                <div class="ride">
+                    <div class="ride-top">
+                        <span class="ride-name">{{ ride.name }}</span>
+                        <span class="wait {% if ride.is_open %}open{% else %}closed{% endif %}">
+                            {% if ride.is_open %}
+                                <i class="fas fa-clock"></i> {{ ride.wait_time }} min
+                            {% else %}
+                                <i class="fas fa-times-circle"></i> Fermé
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="difficulty">
+                        <span class="difficulty-easy">🟢 Très facile</span>
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
-    </section>
-    
-    <section class="category">
-        <h2>🏛️ AUTRES ATTRACTIONS</h2>
-        <p class="description">Autres attractions et expériences du parc</p>
-        <ul>
+        {% else %}
+            <div class="ride">Aucune donnée disponible</div>
+        {% endif %}
+    </div>
+
+    <div class="category">
+        <div class="category-header">
+            <span class="emoji">🏛️</span> Autres attractions
+        </div>
+        {% if autres %}
             {% for ride in autres %}
-                <li>
-                    {% if ride.is_open %}
-                        <span class="open">✅ OUVERT</span>
-                        <span class="wait-time">{{ ride.wait_time }} min</span>
-                    {% else %}
-                        <span class="closed">❌ FERMÉ</span>
-                    {% endif %}
-                    - {{ ride.name }}
-                </li>
+                <div class="ride">
+                    <div class="ride-top">
+                        <span class="ride-name">{{ ride.name }}</span>
+                        <span class="wait {% if ride.is_open %}open{% else %}closed{% endif %}">
+                            {% if ride.is_open %}
+                                <i class="fas fa-clock"></i> {{ ride.wait_time }} min
+                            {% else %}
+                                <i class="fas fa-times-circle"></i> Fermé
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="difficulty">
+                        {% if ride.name == "La Colère d'Anubis" or ride.name == "La maison de la Peur" or ride.name == "Le tombeau des Dieux" or ride.name == "Mission Perdue" or ride.name == "The Catacombs" %}
+                            <span class="difficulty-hard">🔴 Fort</span>
+                        {% elif ride.name == "La tour de Numérobis" %}
+                            <span class="difficulty-medium">🟡 Moyen (petite chute)</span>
+                        {% else %}
+                            <span class="difficulty-easy">🟢 Très facile</span>
+                        {% endif %}
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
-    </section>
-    
-    <div class="warning">
-        <p>⚠️ Les données sont mises à jour périodiquement par l'API Queue-Times.com et peuvent ne pas refléter exactement la situation actuelle dans le parc.</p>
+        {% else %}
+            <div class="ride">Aucune donnée disponible</div>
+        {% endif %}
     </div>
-    
-    <footer>
-        <p>Source des données: Queue-Times.com API</p>
-        <p>© 2025 - Application non-officielle du Parc Astérix</p>
-    </footer>
-    
-    <div id="startup-notice" class="startup-notice">
-        Application en cours de démarrage... Merci de patienter quelques secondes.
-    </div>
-
     <script>
-    // Script optimisé pour gérer le redémarrage à froid et améliorer l'expérience utilisateur
-    (function() {
-        // Détection du temps de chargement
-        const startTime = performance.now();
-        window.addEventListener('load', function() {
-            const loadTime = performance.now() - startTime;
-            // Si le chargement est lent (>2s), probablement un démarrage à froid
-            if (loadTime > 2000) {
-                showStartupNotice();
-            }
+        // Mode sombre
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const body = document.body;
+        
+        // Vérifier si le mode sombre est déjà activé dans localStorage
+        if (localStorage.getItem('darkMode') === 'true') {
+            body.classList.add('dark-mode');
+            darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDarkMode = body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+            darkModeToggle.innerHTML = isDarkMode ? 
+                '<i class="fas fa-sun"></i>' : 
+                '<i class="fas fa-moon"></i>';
         });
-
-        // Gestion du bouton de rafraîchissement
-        document.querySelector('.refresh-button').addEventListener('click', function(e) {
-            e.preventDefault();
-            this.textContent = 'Rafraîchissement en cours...';
-            this.disabled = true;
-            // Utilisation de fetch pour vérifier si l'app est réveillée avant de rafraîchir
-            fetch(window.location.href, { method: 'HEAD' })
-                .then(() => window.location.reload())
-                .catch(() => {
-                    showStartupNotice();
-                    setTimeout(() => window.location.reload(), 3000);
+        
+        // Recherche
+        const searchInput = document.getElementById('search-input');
+        const rides = document.querySelectorAll('.ride');
+        
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            rides.forEach(ride => {
+                const rideName = ride.querySelector('.ride-name').textContent.toLowerCase();
+                if (rideName.includes(searchTerm)) {
+                    ride.classList.remove('hidden');
+                } else {
+                    ride.classList.add('hidden');
+                }
+            });
+        });
+        
+        // Filtrage
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Retirer la classe active de tous les boutons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Ajouter la classe active au bouton cliqué
+                button.classList.add('active');
+                
+                const sortType = button.getAttribute('data-sort');
+                
+                // Réinitialiser la recherche
+                searchInput.value = '';
+                rides.forEach(ride => ride.classList.remove('hidden'));
+                
+                // Trier les attractions dans chaque catégorie
+                const categories = document.querySelectorAll('.category');
+                
+                categories.forEach(category => {
+                    const categoryRides = Array.from(category.querySelectorAll('.ride:not(.hidden)'));
+                    
+                    if (sortType === 'wait') {
+                        categoryRides.sort((a, b) => {
+                            const aWait = parseInt(a.querySelector('.wait').textContent.match(/\d+/) || '999');
+                            const bWait = parseInt(b.querySelector('.wait').textContent.match(/\d+/) || '999');
+                            return aWait - bWait;
+                        });
+                    } else if (sortType === 'difficulty') {
+                        const difficultyOrder = {
+                            'Très facile': 1,
+                            'Facile': 2,
+                            'Moyen': 3,
+                            'Fort': 4,
+                            'Très fort': 5,
+                            'Extrême': 6
+                        };
+                        
+                        categoryRides.sort((a, b) => {
+                            const aDiffText = a.querySelector('.difficulty').textContent.trim();
+                            const bDiffText = b.querySelector('.difficulty').textContent.trim();
+                            
+                            let aDiff = 0;
+                            let bDiff = 0;
+                            
+                            Object.keys(difficultyOrder).forEach(key => {
+                                if (aDiffText.includes(key)) aDiff = difficultyOrder[key];
+                                if (bDiffText.includes(key)) bDiff = difficultyOrder[key];
+                            });
+                            
+                            return aDiff - bDiff;
+                        });
+                    }
+                    
+                    // Réinsérer les éléments triés
+                    categoryRides.forEach(ride => {
+                        category.appendChild(ride);
+                    });
                 });
+            });
         });
-
-        // Affichage de la notification de démarrage
-        function showStartupNotice() {
-            const notice = document.getElementById('startup-notice');
-            notice.style.display = 'block';
-            setTimeout(() => {
-                notice.style.display = 'none';
-            }, 5000);
-        }
-
-        // Préchargement des données pour le prochain accès
-        let lastActivity = Date.now();
-        document.addEventListener('mousemove', updateActivity);
-        document.addEventListener('keydown', updateActivity);
-        document.addEventListener('scroll', updateActivity);
-        document.addEventListener('click', updateActivity);
-
-        function updateActivity() {
-            lastActivity = Date.now();
-        }
-
-        // Ping l'application toutes les 10 minutes si l'utilisateur est actif
-        // pour éviter que l'app s'endorme après 15 minutes d'inactivité
-        setInterval(function() {
-            // Vérifie si l'utilisateur a été actif dans les 5 dernières minutes
-            if (Date.now() - lastActivity < 5 * 60 * 1000) {
-                fetch(window.location.href, { method: 'HEAD' });
-            }
-        }, 10 * 60 * 1000); // 10 minutes
-    })();
     </script>
 </body>
 </html>
