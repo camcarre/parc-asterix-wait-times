@@ -133,5 +133,5 @@ def index():
                           data_freshness=data_freshness)
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5050))  # Changé de 5000 à 5050
+    port = int(os.environ.get('PORT', 2220))  # Port modifié pour éviter les conflits
     app.run(host='0.0.0.0', port=port)
