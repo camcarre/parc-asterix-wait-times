@@ -83,6 +83,39 @@
             color: #8e8e8e;
             margin: 10px 0;
             padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .freshness-indicator {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .freshness-recent {
+            background-color: var(--ig-green);
+            color: white;
+        }
+        
+        .freshness-medium {
+            background-color: var(--ig-yellow);
+            color: black;
+        }
+        
+        .freshness-old {
+            background-color: var(--ig-red);
+            color: white;
+        }
+        
+        .freshness-unknown {
+            background-color: #8e8e8e;
+            color: white;
         }
         
         .category {
@@ -302,7 +335,20 @@
         </div>
     </div>
     
-    <div class="update-info">Dernière mise à jour : {{ last_updated }}</div>
+    <div class="update-info">
+        Dernière mise à jour : {{ last_updated }}
+        <span class="freshness-indicator freshness-{{ data_freshness }}">
+            {% if data_freshness == 'recent' %}
+                <i class="fas fa-check-circle"></i> Données récentes
+            {% elif data_freshness == 'medium' %}
+                <i class="fas fa-exclamation-circle"></i> Données de moins d'une heure
+            {% elif data_freshness == 'old' %}
+                <i class="fas fa-exclamation-triangle"></i> Données anciennes
+            {% else %}
+                <i class="fas fa-question-circle"></i> Fraîcheur inconnue
+            {% endif %}
+        </span>
+    </div>
 
     <div class="category">
         <div class="category-header">

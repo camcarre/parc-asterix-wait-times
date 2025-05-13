@@ -101,14 +101,26 @@ def index():
     if not last_updated and data.get("rides") and len(data["rides"]) > 0:
         last_updated = data["rides"][0].get("last_updated")
     
-    # Formater la date
+    # Formater la date et déterminer la fraîcheur des données
     formatted_date = "aujourd'hui"
+    data_freshness = "unknown"
     
     if last_updated:
         try:
             # Convertir le format ISO en objet datetime
             dt = datetime.fromisoformat(last_updated.replace('Z', '+00:00'))
             formatted_date = dt.strftime("%d/%m/%Y à %H:%M:%S")
+            
+            # Calculer la fraîcheur des données
+            now = datetime.now(timezone.utc)
+            diff = now - dt
+            
+            if diff < timedelta(minutes=15):
+                data_freshness = "recent"
+            elif diff < timedelta(hours=1):
+                data_freshness = "medium"
+            else:
+                data_freshness = "old"
         except:
             formatted_date = last_updated
     
@@ -117,7 +129,8 @@ def index():
                           familles=familles, 
                           enfants=enfants, 
                           autres=autres,
-                          last_updated=formatted_date)
+                          last_updated=formatted_date,
+                          data_freshness=data_freshness)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5050))  # Changé de 5000 à 5050
