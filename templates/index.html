@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parc Astérix - Temps d'attente</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 10px;
+        }
+        h1 {
+            color: #e74c3c;
+            margin-bottom: 5px;
+        }
+        .update-info {
+            background-color: #f8f9fa;
+            border-left: 4px solid #e74c3c;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .category {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #e74c3c;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .description {
+            font-style: italic;
+            margin-bottom: 15px;
+            color: #666;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .open {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .closed {
+            color: #c0392b;
+        }
+        .wait-time {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.8em;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .warning {
+            background-color: #fcf8e3;
+            border-left: 4px solid #f39c12;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+        .refresh-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        .refresh-button:hover {
+            background-color: #c0392b;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .category {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎢 Parc Astérix - Temps d'attente</h1>
+        <p>Consultez les temps d'attente en direct pour planifier votre visite</p>
+    </header>
+    
+    <div class="update-info">
+        <p>📌 Données mises à jour le {{ last_updated }}</p>
+        <p>⚠️ {{ freshness }} - PAS DE DONNÉES EN TEMPS RÉEL</p>
+    </div>
+    
+    <button class="refresh-button" onclick="window.location.reload()">Rafraîchir les données</button>
+    
+    <section class="category">
+        <h2>🎢 SENSATIONS FORTES</h2>
+        <p class="description">Ces attractions sont destinées aux amateurs de sensations intenses</p>
+        <ul>
+            {% for ride in sensations %}
+                <li>
+                    {% if ride.is_open %}
+                        <span class="open">✅ OUVERT</span>
+                        <span class="wait-time">{{ ride.wait_time }} min</span>
+                    {% else %}
+                        <span class="closed">❌ FERMÉ</span>
+                    {% endif %}
+                    - {{ ride.name }}
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+    
+    <section class="category">
+        <h2>👨‍👩‍👧‍👦 ATTRACTIONS FAMILIALES</h2>
+        <p class="description">Ces attractions conviennent à tous les âges</p>
+        <ul>
+            {% for ride in familles %}
+                <li>
+                    {% if ride.is_open %}
+                        <span class="open">✅ OUVERT</span>
+                        <span class="wait-time">{{ ride.wait_time }} min</span>
+                    {% else %}
+                        <span class="closed">❌ FERMÉ</span>
+                    {% endif %}
+                    - {{ ride.name }}
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+    
+    <section class="category">
+        <h2>🧒 PETITS GAULOIS</h2>
+        <p class="description">Ces attractions sont spécialement conçues pour les plus jeunes visiteurs</p>
+        <ul>
+            {% for ride in enfants %}
+                <li>
+                    {% if ride.is_open %}
+                        <span class="open">✅ OUVERT</span>
+                        <span class="wait-time">{{ ride.wait_time }} min</span>
+                    {% else %}
+                        <span class="closed">❌ FERMÉ</span>
+                    {% endif %}
+                    - {{ ride.name }}
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+    
+    <section class="category">
+        <h2>🏛️ AUTRES ATTRACTIONS</h2>
+        <p class="description">Autres attractions et expériences du parc</p>
+        <ul>
+            {% for ride in autres %}
+                <li>
+                    {% if ride.is_open %}
+                        <span class="open">✅ OUVERT</span>
+                        <span class="wait-time">{{ ride.wait_time }} min</span>
+                    {% else %}
+                        <span class="closed">❌ FERMÉ</span>
+                    {% endif %}
+                    - {{ ride.name }}
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+    
+    <div class="warning">
+        <p>⚠️ Les données sont mises à jour périodiquement par l'API Queue-Times.com et peuvent ne pas refléter exactement la situation actuelle dans le parc.</p>
+    </div>
+    
+    <footer>
+        <p>Source des données: Queue-Times.com API</p>
+        <p>© 2025 - Application non-officielle du Parc Astérix</p>
+    </footer>
+</body>
+</html>
