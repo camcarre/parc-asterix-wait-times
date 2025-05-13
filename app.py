@@ -1,18 +1,52 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 import requests
 from datetime import datetime, timezone, timedelta
 import os
+import functools
+import time
+import json
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 300  # Cache navigateur de 5 minutes
+
+# Cache en mémoire simple (sera réinitialisé si l'app s'endort après 15 min d'inactivité)
+CACHE_TIMEOUT = 300  # 5 minutes pour éviter trop d'appels API
+api_cache = {}
+
+# Décorateur pour mise en cache légère
+def timed_cache(timeout=CACHE_TIMEOUT):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            cache_key = str(args) + str(kwargs)
+            if cache_key in api_cache:
+                result, timestamp = api_cache[cache_key]
+                if time.time() - timestamp < timeout:
+                    return result
+            result = func(*args, **kwargs)
+            api_cache[cache_key] = (result, time.time())
+            return result
+        return wrapper
+    return decorator
+
+@timed_cache(timeout=CACHE_TIMEOUT)
+def fetch_api_data():
+    """Récupère les données de l'API avec mise en cache légère"""
+    url = "https://queue-times.com/parks/9/queue_times.json"
+    try:
+        # Timeout court pour éviter de bloquer trop longtemps (RAM limitée)
+        response = requests.get(url, timeout=3)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        # Gestion d'erreur simplifiée pour économiser les ressources
+        print(f"Erreur API: {str(e)[:100]}")
+        return {"rides": [], "last_updated": None}
 
 @app.route('/')
 def index():
-    # URL de l'API pour le Parc Astérix (ID = 9)
-    url = "https://queue-times.com/parks/9/queue_times.json"
-
-    # Requête GET vers l'API
-    response = requests.get(url)
-    data = response.json()
+    # Récupérer les données de l'API avec mise en cache
+    data = fetch_api_data()
 
     # Définition des catégories d'attractions
     sensations_fortes = [

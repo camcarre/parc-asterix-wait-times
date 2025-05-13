@@ -4,108 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parc Astérix - Temps d'attente</title>
+    <!-- Ajout des méta-tags pour améliorer le chargement -->
+    <meta http-equiv="Cache-Control" content="max-age=300">
+    <meta name="description" content="Temps d'attente en direct pour les attractions du Parc Astérix">
     <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #e74c3c;
-            padding-bottom: 10px;
-        }
-        h1 {
-            color: #e74c3c;
-            margin-bottom: 5px;
-        }
-        .update-info {
-            background-color: #f8f9fa;
-            border-left: 4px solid #e74c3c;
-            padding: 10px 15px;
-            margin-bottom: 20px;
-            font-size: 0.9em;
-        }
-        .category {
-            background-color: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        h2 {
-            margin-top: 0;
-            color: #e74c3c;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        .description {
-            font-style: italic;
-            margin-bottom: 15px;
-            color: #666;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .open {
-            color: #27ae60;
-            font-weight: bold;
-        }
-        .closed {
-            color: #c0392b;
-        }
-        .wait-time {
-            font-weight: bold;
-            margin-left: 10px;
-        }
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 0.8em;
-            color: #777;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-        .warning {
-            background-color: #fcf8e3;
-            border-left: 4px solid #f39c12;
-            padding: 10px 15px;
-            margin: 15px 0;
-        }
-        .refresh-button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 20px 0;
-            transition: background-color 0.3s;
-        }
-        .refresh-button:hover {
-            background-color: #c0392b;
-        }
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            .category {
-                padding: 10px;
-            }
-        }
+        /* CSS minifié et optimisé */
+        body{font-family:system-ui,-apple-system,sans-serif;line-height:1.5;color:#333;max-width:800px;margin:0 auto;padding:15px;background-color:#f5f5f5}
+        header{text-align:center;margin-bottom:20px;border-bottom:2px solid #e74c3c;padding-bottom:10px}
+        h1{color:#e74c3c;margin-bottom:5px;font-size:1.8rem}
+        h2{margin-top:0;color:#e74c3c;border-bottom:1px solid #eee;padding-bottom:8px;font-size:1.4rem}
+        .update-info{background-color:#f8f9fa;border-left:4px solid #e74c3c;padding:10px;margin-bottom:15px;font-size:.9em}
+        .category{background-color:#fff;border-radius:8px;padding:12px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+        .description{font-style:italic;margin-bottom:12px;color:#666}
+        ul{list-style-type:none;padding:0;margin:0}
+        li{padding:6px 0;border-bottom:1px solid #eee}
+        .open{color:#27ae60;font-weight:700}
+        .closed{color:#c0392b}
+        .wait-time{font-weight:700;margin-left:8px}
+        footer{text-align:center;margin-top:25px;font-size:.8em;color:#777;border-top:1px solid #eee;padding-top:15px}
+        .warning{background-color:#fcf8e3;border-left:4px solid #f39c12;padding:10px;margin:12px 0;font-size:.9em}
+        .refresh-button{display:block;width:100%;padding:10px;background-color:#e74c3c;color:#fff;border:none;border-radius:4px;font-size:16px;cursor:pointer;margin:15px 0}
+        .refresh-button:hover{background-color:#c0392b}
+        .startup-notice{display:none;position:fixed;bottom:20px;right:20px;background:#333;color:#fff;padding:10px;border-radius:4px;font-size:.8em;max-width:250px;z-index:100}
+        @media (max-width:600px){body{padding:8px}.category{padding:8px}}
     </style>
 </head>
 <body>
@@ -201,5 +122,67 @@
         <p>Source des données: Queue-Times.com API</p>
         <p>© 2025 - Application non-officielle du Parc Astérix</p>
     </footer>
+    
+    <div id="startup-notice" class="startup-notice">
+        Application en cours de démarrage... Merci de patienter quelques secondes.
+    </div>
+
+    <script>
+    // Script optimisé pour gérer le redémarrage à froid et améliorer l'expérience utilisateur
+    (function() {
+        // Détection du temps de chargement
+        const startTime = performance.now();
+        window.addEventListener('load', function() {
+            const loadTime = performance.now() - startTime;
+            // Si le chargement est lent (>2s), probablement un démarrage à froid
+            if (loadTime > 2000) {
+                showStartupNotice();
+            }
+        });
+
+        // Gestion du bouton de rafraîchissement
+        document.querySelector('.refresh-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            this.textContent = 'Rafraîchissement en cours...';
+            this.disabled = true;
+            // Utilisation de fetch pour vérifier si l'app est réveillée avant de rafraîchir
+            fetch(window.location.href, { method: 'HEAD' })
+                .then(() => window.location.reload())
+                .catch(() => {
+                    showStartupNotice();
+                    setTimeout(() => window.location.reload(), 3000);
+                });
+        });
+
+        // Affichage de la notification de démarrage
+        function showStartupNotice() {
+            const notice = document.getElementById('startup-notice');
+            notice.style.display = 'block';
+            setTimeout(() => {
+                notice.style.display = 'none';
+            }, 5000);
+        }
+
+        // Préchargement des données pour le prochain accès
+        let lastActivity = Date.now();
+        document.addEventListener('mousemove', updateActivity);
+        document.addEventListener('keydown', updateActivity);
+        document.addEventListener('scroll', updateActivity);
+        document.addEventListener('click', updateActivity);
+
+        function updateActivity() {
+            lastActivity = Date.now();
+        }
+
+        // Ping l'application toutes les 10 minutes si l'utilisateur est actif
+        // pour éviter que l'app s'endorme après 15 minutes d'inactivité
+        setInterval(function() {
+            // Vérifie si l'utilisateur a été actif dans les 5 dernières minutes
+            if (Date.now() - lastActivity < 5 * 60 * 1000) {
+                fetch(window.location.href, { method: 'HEAD' });
+            }
+        }, 10 * 60 * 1000); // 10 minutes
+    })();
+    </script>
 </body>
 </html>
