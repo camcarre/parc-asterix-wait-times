@@ -399,6 +399,120 @@
             display: block;
         }
         
+        /* Styles pour le modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;
+        }
+        
+        .modal-title {
+            margin-top: 0;
+            color: #1e3a8a;
+            font-size: 24px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .modal-level {
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        .modal-level.easy {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .modal-level.medium {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .modal-level.strong {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        
+        .modal-level.very-strong {
+            background-color: #fecaca;
+            color: #7f1d1d;
+        }
+        
+        .modal-level.extreme {
+            background-color: #fca5a5;
+            color: #7f1d1d;
+            font-weight: bold;
+        }
+        
+        .modal-description {
+            line-height: 1.6;
+            color: #4b5563;
+        }
+        
+        /* Rendre les attractions cliquables */
+        .ride {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .ride:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Mode sombre pour le modal */
+        body.dark-mode .modal {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .modal-title {
+            color: #60a5fa;
+            border-bottom-color: #333;
+        }
+        
+        body.dark-mode .modal-description {
+            color: #d1d5db;
+        }
+        
+        body.dark-mode .modal-close {
+            color: #d1d5db;
+        }
+        
         .hidden-joke {
             font-size: 0.7rem;
             color: var(--ig-secondary);
@@ -943,6 +1057,81 @@
                 level: "Extrême (Lancement 107 km/h)",
                 levelClass: "extreme",
                 description: "C'est la dernière nouveauté du parc et de loin l'attraction la plus intense. Tu es propulsé à 107 km/h en quelques secondes avec un système de lancement magnétique, puis tu enchaînes des airtimes à répétition, des inversions, des vrilles et même un top hat culminant à 51 mètres. C'est du très haut niveau, réservé aux vrais amateurs de sensations extrêmes."
+            },
+            "L'Oxygénarium": {
+                level: "Moyen",
+                levelClass: "medium",
+                description: "Monte dans une grosse bouée avec ta famille ou tes amis, et dévale une spirale géante tout en tournant sur toi-même ! Ce toboggan aquatique géant, installé en hauteur, combine glissade rapide, virages serrés et mouvements de rotation. Pas de loopings ni de chutes brutales, mais une expérience dynamique, amusante, parfois un peu désorientante, qui plaît autant aux enfants qu'aux adultes."
+            },
+            "Attention Menhir !": {
+                level: "Facile",
+                levelClass: "easy",
+                description: "C'est un cinéma 4D hilarant qui te plonge dans l'univers des Gaulois ! Tu es assis dans un siège qui bouge et vibre au rythme de l'action à l'écran, avec des effets de vent, d'eau, de lumière et même des surprises olfactives. Une aventure immersive très bien réalisée, drôle et parfaitement adaptée à tous les âges, même les plus petits."
+            },
+            "Epidemaïs Croisières": {
+                level: "Facile",
+                levelClass: "easy",
+                description: "Une balade fluviale en bateau où tu découvres des scènes humoristiques représentant les différents peuples que les Gaulois rencontrent lors de leurs aventures. C'est une attraction contemplative, sans accélérations ni secousses, idéale pour souffler un peu et se plonger dans l'univers visuel de la bande dessinée."
+            },
+            "L'Hydre de Lerne": {
+                level: "Moyen (manège tournant)",
+                levelClass: "medium",
+                description: "Un manège circulaire à rotations multiples, inspiré du monstre mythologique. Chaque module tourne sur lui-même tout en tournant autour du centre, créant une sensation de centrifugeuse modérée. Pas extrême, mais assez pour faire rire et tourner un peu la tête. Accessible aux plus jeunes accompagnés."
+            },
+            "La Petite Tempête": {
+                level: "Moyen (manège tournant)",
+                levelClass: "medium",
+                description: "Cette attraction oscille d'avant en arrière tout en tournant, imitant une mini-tempête marine. Plus douce que les grosses attractions à sensations, mais elle offre quand même de bonnes petites accélérations et un effet de glisse sympathique. Adaptée aux enfants téméraires."
+            },
+            "La Revanche des Pirates - Le Grand Splatch": {
+                level: "Moyen",
+                levelClass: "medium",
+                description: "Tu montes dans un grand bateau pour une croisière tranquille qui se termine par de grandes descentes aquatiques ! L'attraction est rafraîchissante, amusante, avec une chute finale bien splashante. Une des meilleures pour ceux qui veulent rire et se mouiller un peu sans trop d'intensité."
+            },
+            "La Rivière d'Elis": {
+                level: "Facile",
+                levelClass: "easy",
+                description: "Un parcours très zen dans une barque à fleurs, au milieu de décors verdoyants. Pas de surprise, pas de secousses : c'est l'attraction parfaite pour les tout-petits, ou pour faire une pause au calme. On s'y détend et on admire les paysages."
+            },
+            "Le Défi de César": {
+                level: "Facile",
+                levelClass: "easy",
+                description: "Un parcours interactif et humoristique où tu dois passer des épreuves pour devenir espion de César. Il s'agit plus d'un parcours-scène avec des effets spéciaux et illusions (sols qui tournent, salles qui tremblent, etc.) qu'un vrai manège. Très amusant, accessible à tous et bourré de gags visuels."
+            },
+            "Le Vol d'Icare": {
+                level: "Moyen",
+                levelClass: "medium",
+                description: "Un petit grand huit familial sur rails inspiré de la mythologie grecque. Il n'a pas de vrille ni de boucle, mais propose une vitesse modérée, des descentes et des virages serrés. C'est un bon premier pas vers les montagnes russes plus sérieuses, sans être trop intimidant."
+            },
+            "Les Chaudrons": {
+                level: "Facile",
+                levelClass: "easy",
+                description: "Un classique : les tasses tournantes façon potion magique ! Tu montes dans un chaudron et tu peux le faire tourner plus ou moins vite avec un volant au centre. Très ludique et rigolo, parfait pour rigoler entre amis ou en famille. Peu intense, mais très interactif."
+            },
+            "Les Espions de César": {
+                level: "Facile",
+                levelClass: "easy",
+                description: "Tu embarques dans une voiturette pour espionner un camp romain à travers différents décors animés, scènes humoristiques et gadgets. Il n'y a aucun mouvement brusque, c'est une attraction \"visuelle\" et scénarisée, dans l'esprit d'un petit dark ride à la Disney. Très sympa pour les jeunes enfants."
+            },
+            "Menhir Express": {
+                level: "Moyen (aquatique)",
+                levelClass: "medium",
+                description: "Une des attractions emblématiques du parc : tu montes dans une bûche en forme de menhir pour un parcours aquatique avec deux belles descentes, dont une en arrière ! Très rafraîchissante et rythmée, elle plaît autant aux adultes qu'aux enfants, même si on ressort souvent trempé…"
+            },
+            "Pégase Express": {
+                level: "Moyen",
+                levelClass: "medium",
+                description: "Un des meilleurs coasters familiaux du parc. Tu es embarqué dans un train rapide à travers un parcours riche en rebondissements, virages et même un passage en arrière surprise ! Le tout est très fluide, immersif et accessible dès 1 mètre de taille. Un vrai coup de cœur familial."
+            },
+            "Romus et Rapidus": {
+                level: "Moyen (aquatique)",
+                levelClass: "medium",
+                description: "Une descente de rivière en bouée géante. Le courant est rapide, les vagues t'éclaboussent, et le tout est complètement imprévisible. Parfait en été, en groupe, pour rigoler et se faire tremper dans la bonne humeur. Sensations modérées mais ambiance garantie !"
+            },
+            "SOS Tournevis": {
+                level: "Facile",
+                levelClass: "easy",
+                description: "Une petite montagne russe conçue pour les enfants. Le parcours est court, les virages sont doux, et la vitesse est adaptée. C'est souvent la première montagne russe pour les tout-petits. Elle est mignonne, sans frayeur, mais amusante quand on débute."
             }
         };
         
